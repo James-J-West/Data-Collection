@@ -237,7 +237,9 @@ class ProductTestCase(unittest.TestCase):
 unittest.main(argv=[""], verbosity=2, exit=False)
 
 ```
+## Milestone 5 - Scalably Storing the data
 
+Created a AWS S3 bucket to store all the raw json files and images in. This was my first time using the s3 bucket and AWS. The tabular data (Prices, names and IDs) were also stored in a RDS using postgres and PgAdmin4. This was tricky as i have never used SQL before, but as i progressed it got easier and easier to manipulate the database. 
 
 ## Conclusions
 
