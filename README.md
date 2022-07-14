@@ -245,6 +245,104 @@ Created a AWS S3 bucket to store all the raw json files and images in. This was 
 
 ![](images/RDS.PNG)
 
+## Milestone 6 - Preventing Recraping
+
+By Connecting to the RDS Database and reading all the product IDs, i can have a list of all IDs that have been uploaded to the RDS. By Checking if the scraped ID is in this list at the start of each search result, we can prevent scraping the same product more than once.
+
+```python
+
+    def check_product_id(self, table_name, product_id):
+        """
+        A function that uploads the data to the RDS database server
+        """
+        DATABASE_TYPE = 'postgresql'
+        DBAPI = 'psycopg2'
+        HOST = 'database-1.csoiffuysgtp.eu-west-2.rds.amazonaws.com'
+        USER = 'postgres'
+        PASSWORD = 'Erzacana_01'
+        DATABASE = 'cex--data'
+        PORT = 5432
+        engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}")
+        engine.connect()
+        uploaded = engine.execute(f"""SELECT product_id FROM {table_name}""").fetchall()
+        uploaded_ids = []
+        for id_tuple in uploaded:
+            uploaded_id = id_tuple[0]
+            uploaded_ids.append(uploaded_id)
+        if product_id in uploaded_ids:
+            return True
+        else:
+            return False
+
+    def upload_data_RDS(self,table_name, uudi, product_id, name, selling, cash, voucher):
+        """
+        A function that uploads the data to the RDS database server
+        """
+        DATABASE_TYPE = 'postgresql'
+        DBAPI = 'psycopg2'
+        HOST = 'database-1.csoiffuysgtp.eu-west-2.rds.amazonaws.com'
+        USER = 'postgres'
+        PASSWORD = 'Erzacana_01'
+        DATABASE = 'cex--data'
+        PORT = 5432
+        engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}")
+        engine.connect()
+        engine.execute(self.make_SQL(table_name, self.make_data_format(uudi, product_id, name, selling, cash, voucher)))
+    def save_data_locally(self, filename, record_details):
+        """
+        A function to save the data locally
+        """
+        with open(filename, 'w') as fp:
+            json.dump(record_details, fp,  indent=4)
+
+    def data_choice(self, table_name):
+        """
+        A function to give the user a choice to upload or save the data locally
+        """
+        locally = int(input("To save data locally - press 1"))
+        upload = int(input(f"To upload data to the {table_name} table - press 1"))
+        return locally, upload
+
+    def save_data(self,filename,local_choice, upload_choice, record_details, table_name):
+        """
+        Save the data either locally or upload it using the other methods and based on the users choice
+        """
+
+        already_uploaded = self.check_product_id(table_name, record_details[1])
+
+        if local_choice != 1 and upload_choice != 1:
+             print("NO DATA WILL BE SAVED")
+        elif local_choice == 1 or upload_choice == 1:
+            if already_uploaded == False:
+                if local_choice == 1 and upload_choice == 1:
+                    self.save_data_locally(filename, record_details)
+                    self.upload_data_RDS(table_name, record_details[0], record_details[1], record_details[2], record_details[3], record_details[4], record_details[5])
+                elif local_choice == 1 and upload_choice != 1:
+                    self.save_data_locally(filename, record_details)
+                elif local_choice != 1 and upload_choice == 1:
+                    self.upload_data_RDS(table_name, record_details[0], record_details[1], record_details[2], record_details[3], record_details[4], record_details[5])
+                else:
+                    print("NO DATA WILL BE SAVED")
+
+            elif already_uploaded == True:
+                print(f"Product with product-id {record_details[1]} has already been uploaded to the table {table_name}")
+
+    def make_data_format(self, uuid, product_id, name, selling, cash, voucher):
+        """
+        A function to format the data to allow it to be used in the SQL
+        """
+        name = name.replace("'", "")
+        data_formatted = f"('{uuid}', '{product_id}', '{name}', '{selling}', '{cash}', '{voucher}')"
+        return data_formatted
+
+    def make_SQL(self, table_name, data):
+        """
+        A function that crates the SQL Query to upload the data into a table (TABLE HAS TO EXIST ALREADY)
+        """
+        SQL = f'''INSERT INTO {table_name} VALUES {data}'''
+        return SQL
+```
+
 ## Conclusions
 
 - This project helped me understand that breaking down the project into achievable goals can help understand whats going on and figure out what the next step is and how to do it. To improve, i would move the round timer onto the screen and make it so the camera doesnt close every round
