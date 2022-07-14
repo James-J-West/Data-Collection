@@ -110,11 +110,81 @@ class scraper():
                     if i.get_attribute("href") not in links:
                         links.append(i.get_attribute("href"))
         return links
-        
-
-
 ```
+## Milestone 3 - Retriving Data From Each Product
 
+Used Selenium to retrieve the name, product id and prices of each product. This was done seperatley for each attribute of the product, in its own method. A UUID was also generated based off the products name, ussing the UUID library. These details were then saved into a dictionary to be extracted into a json file. The image of each product was also collected in its own method.
+
+```python
+def get_product_name(self, product, prod_name_class):
+        """
+        A function which returns the name of a product given the class of the element containing the name
+
+        Parameters:
+            product = web element of the product
+            prod_name_class = class of the name element
+            name_element = web element of the name
+        Returns:
+            product_name = product name
+        """
+        name_element = product.find_element_by_class_name(prod_name_class)
+        product_name = name_element.text
+        return product_name
+
+    def get_product_price(self, product, prod_price_class):
+        """
+        A function which returns the price of a product given the class of the element containing the price
+        
+        Parameters:
+            product = web element of the product
+            prod_price_class = class of the price element
+        Returns:
+            price = web element of the price
+        """
+        price = product.find_elements_by_class_name(prod_price_class)
+
+        if len(price) == 1:
+            return price[0]
+        else:
+            return price
+
+    def make_uuid(self, product_name):
+        """
+        A function which creates and returns a uuid based on the products name
+        
+        Parameters:
+            product_name = name of the product (string)
+        Returns:
+            uuid_str = generated uuid (String)
+        """
+        uuid_str = str(uuid.uuid3(uuid.NAMESPACE_DNS, product_name))
+        return uuid_str
+
+    def get_prod_id(self, product, product_id_att):
+        """
+        A function which finds and returns the product id
+        
+        Parameters:
+            product = web element of the product (string)
+            product_id_att = attribute of the product id
+        Returns:
+            id = product id (string)
+        """
+        id = product.get_attribute(product_id_att)
+        return str(id)
+        
+    def save_screenshots_locally(self, element, folder, filename):
+        """
+        A function which finds and saves an image for a product given the element containing the image
+        
+        Parameters:
+            element = web element of the image container (WebElement)
+            folder = The name of the folder the images will be stored in (string)
+            filename = Name of the image we want saves (string)
+        Returns:
+        """
+        element.screenshot(f'.\{folder}\{filename}.png')
+```
 
 ## Conclusions
 
