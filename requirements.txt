@@ -1,0 +1,7 @@
+numpy
+selenium==3.141.0
+uuid
+sqlalchemy
+pandas
+boto3
+psycopg2
