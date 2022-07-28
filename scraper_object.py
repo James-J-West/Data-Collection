@@ -1,4 +1,3 @@
-from numpy import record
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
@@ -6,10 +5,9 @@ from selenium.common.exceptions import ElementNotInteractableException
 import time
 import uuid
 from sqlalchemy import create_engine
-import pandas as pd
 import json
 import boto3
-import os
+
 
 ###########################
 #NEED TO UPDATE DOCSTRINGS#
@@ -19,6 +17,14 @@ class scraper():
     
     def __init__(self, pause):
         options = Options()
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument('--ignore-certificate-errors')
+        options.add_argument('--allow-running-insecure-content')        
+        options.add_argument('--no-sandbox')        
+        options.add_argument('--headless')        
+        options.add_argument("user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'")
+        options.add_argument("--width=1920")
+        options.add_argument("--height=1080")
         options.headless = True
         self.driver = webdriver.Firefox(options=options)
         self.pause = pause
@@ -36,6 +42,7 @@ class scraper():
         time.sleep(self.pause)
 
     def click_but_by_txt(self, TEXT):
+        time.sleep(3)
         """
         A function which finds and clicks a button based on the desired text of the button
         
@@ -43,11 +50,11 @@ class scraper():
             TEXT = text of the button to be pressed (string)
         Returns:
         """
-        buts = self.driver.find_elements_by_tag_name("button")
+        buttons = self.driver.find_elements_by_tag_name("button")
         #Only click if the text on the button matches the given text
-        for i in buts:
+        for i in buttons:
             if i.text == TEXT:
-                i.click()
+                self.driver.execute_script("arguments[0].click;", i)
                 time.sleep(self.pause)
 
     def save_screenshots_locally(self, element, folder, filename):
@@ -72,13 +79,14 @@ class scraper():
         Returns:
         """
         last_height = self.driver.execute_script("return document.body.scrollHeight")
+        time.sleep(2)
         while True:
             try:
                 element = self.find_single_by_txt("Show more records")
             except NoSuchElementException:
                 pass
             try:
-                element.click()
+                self.driver.execute_script("arguments[0].click;", element)
             except ElementNotInteractableException:
                 pass
 
@@ -159,7 +167,7 @@ class scraper():
         button_container = self.driver.find_elements_by_xpath(button_container_xpath)
         for button_element in button_container:
             button = button_element.find_element_by_tag_name(button_tag)
-            button.click()
+            self.driver.execute_script("arguments[0].click;", button)
             time.sleep(0.5)
 
     def get_products(self, product_container_xpath, product_class_name):
@@ -328,21 +336,6 @@ class scraper():
             uploaded_id = id_tuple[0]
             uploaded_ids.append(uploaded_id)
         if product_id in uploaded_ids:
-            return True
-        else:
-            return False
-
-    def check_photos_s3(self, s3_bucket_name, product_id):
-        name = 's3'
-        region = 'eu-west-2'
-        aws_access = 'AKIAZP3LQ2AGURWPUM5R'
-        aws_secret_key = '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'
-
-        s3 = boto3.resource(service_name = name, region_name = region, aws_access_key_id = aws_access, aws_secret_access_key = aws_secret_key)
-        already_uploaded = []
-        for file in s3.Bucket(f'{s3_bucket_name}').objects.all():
-            already_uploaded.append(file.key)
-        if f'{product_id}.png' in already_uploaded:
             return True
         else:
             return False
