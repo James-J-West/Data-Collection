@@ -348,6 +348,12 @@ Using Docker, the scraper class, and the CEX_scraping.py file can be containeris
 
 ![](images/docker-image.png)
 
+## Milestone 8 - Monitoring the Docker container
+
+Using a prometheus container that is connected to the ec2 instance via a "prometheus.yml" file, we can monitor the hardware of the instance (cpu usage and memory). Prometheus can also be connected to docker to monitor the health of containers. This was done by modifying the daemon.json file and the proemtheus.yml file to connect. The metrics gathered were then monitored using Grafana
+
+![](images/Grafana.png)
+
 ## Conclusions
 
 - This project helped me understand that breaking down the project into achievable goals can help understand whats going on and figure out what the next step is and how to do it. To improve, i would move the round timer onto the screen and make it so the camera doesnt close every round
