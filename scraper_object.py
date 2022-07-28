@@ -50,11 +50,11 @@ class scraper():
             TEXT = text of the button to be pressed (string)
         Returns:
         """
-        buts = self.driver.find_elements_by_tag_name("button")
+        buttons = self.driver.find_elements_by_tag_name("button")
         #Only click if the text on the button matches the given text
-        for i in buts:
+        for i in buttons:
             if i.text == TEXT:
-                i.click()
+                self.driver.execute_script("arguments[0].click;", i)
                 time.sleep(self.pause)
 
     def save_screenshots_locally(self, element, folder, filename):
@@ -86,7 +86,7 @@ class scraper():
             except NoSuchElementException:
                 pass
             try:
-                element.click()
+                self.driver.execute_script("arguments[0].click;", element)
             except ElementNotInteractableException:
                 pass
 
@@ -167,7 +167,7 @@ class scraper():
         button_container = self.driver.find_elements_by_xpath(button_container_xpath)
         for button_element in button_container:
             button = button_element.find_element_by_tag_name(button_tag)
-            button.click()
+            self.driver.execute_script("arguments[0].click;", button)
             time.sleep(0.5)
 
     def get_products(self, product_container_xpath, product_class_name):
