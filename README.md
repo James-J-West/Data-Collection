@@ -346,7 +346,7 @@ By Connecting to the RDS Database and reading all the product IDs, i can have a 
 
 Using Docker, the scraper class, and the CEX_scraping.py file can be containerised in a docker image, which can then be ran in a docker container on any system. The requirements of the scraper were also needed to build the docker image. Once the docker image was build and ran sucessfully on the local machine, A EC2 instance (t2.medium) was used to run the docker container. The scraper itself required some options to be included for a sucessfull launch (headless etc.).
 
-![](images/docker image.PNG)
+![](images/docker-image.PNG)
 
 ## Conclusions
 
