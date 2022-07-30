@@ -310,7 +310,7 @@ class scraper():
         DBAPI = 'psycopg2'
         HOST = 'database-1.csoiffuysgtp.eu-west-2.rds.amazonaws.com'
         USER = 'postgres'
-        PASSWORD = 'Erzacana_01'
+        PASSWORD = 'grimy'
         DATABASE = 'cex--data'
         PORT = 5432
         engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}")
@@ -325,7 +325,7 @@ class scraper():
         DBAPI = 'psycopg2'
         HOST = 'database-1.csoiffuysgtp.eu-west-2.rds.amazonaws.com'
         USER = 'postgres'
-        PASSWORD = 'Erzacana_01'
+        PASSWORD = 'grimy'
         DATABASE = 'cex--data'
         PORT = 5432
         engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}")
