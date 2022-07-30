@@ -342,6 +342,17 @@ By Connecting to the RDS Database and reading all the product IDs, i can have a 
         SQL = f'''INSERT INTO {table_name} VALUES {data}'''
         return SQL
 ```
+## Milestone 7 - Containerising the scraper and running it on the cloud
+
+Using Docker, the scraper class, and the CEX_scraping.py file can be containerised in a docker image, which can then be ran in a docker container on any system. The requirements of the scraper were also needed to build the docker image. Once the docker image was build and ran sucessfully on the local machine, A EC2 instance (t2.medium) was used to run the docker container. The scraper itself required some options to be included for a sucessfull launch (headless etc.).
+
+![](images/docker-image.png)
+
+## Milestone 8 - Monitoring the Docker container
+
+Using a prometheus container that is connected to the ec2 instance via a "prometheus.yml" file, we can monitor the hardware of the instance (cpu usage and memory). Prometheus can also be connected to docker to monitor the health of containers. This was done by modifying the daemon.json file and the proemtheus.yml file to connect. The metrics gathered were then monitored using Grafana
+
+![](images/Grafana.png)
 
 ## Conclusions
 
