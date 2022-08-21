@@ -7,7 +7,7 @@ import uuid
 from sqlalchemy import create_engine
 import json
 import boto3
-
+import yaml
 
 ###########################
 #NEED TO UPDATE DOCSTRINGS#
@@ -28,6 +28,9 @@ class scraper():
         options.headless = True
         self.driver = webdriver.Firefox(options=options)
         self.pause = pause
+        
+        with open("aws_details.yaml") as file:
+            self.creds = yaml.safe_load(file)
 
 
     def open_url(self, url):
@@ -303,15 +306,16 @@ class scraper():
 #############################################################
     
     def upload_data_RDS(self,table_name, uudi, product_id, name, selling, cash, voucher):
+
         """
         A function that uploads the data to the RDS database server
         """
-        DATABASE_TYPE = 'postgresql'
-        DBAPI = 'psycopg2'
-        HOST = 'database-1.csoiffuysgtp.eu-west-2.rds.amazonaws.com'
-        USER = 'postgres'
-        PASSWORD = 'grimy'
-        DATABASE = 'cex--data'
+        DATABASE_TYPE = self.creds["DATABASE_TYPE"]
+        DBAPI = self.creds["DBAPI"]
+        HOST = self.creds["HOST"]
+        USER = self.creds["USER"]
+        PASSWORD = self.creds["PASSWORD"]
+        DATABASE = self.creds["DATABASE"]
         PORT = 5432
         engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}")
         engine.connect()
@@ -321,12 +325,12 @@ class scraper():
         """
         A function that uploads the data to the RDS database server
         """
-        DATABASE_TYPE = 'postgresql'
-        DBAPI = 'psycopg2'
-        HOST = 'database-1.csoiffuysgtp.eu-west-2.rds.amazonaws.com'
-        USER = 'postgres'
-        PASSWORD = 'grimy'
-        DATABASE = 'cex--data'
+        DATABASE_TYPE = self.creds["DATABASE_TYPE"]
+        DBAPI = self.creds["DBAPI"]
+        HOST = self.creds["HOST"]
+        USER = self.creds["USER"]
+        PASSWORD = self.creds["PASSWORD"]
+        DATABASE = self.creds["DATABASE"]
         PORT = 5432
         engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}")
         engine.connect()
