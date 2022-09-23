@@ -356,4 +356,4 @@ Using a prometheus container that is connected to the ec2 instance via a "promet
 
 ## Conclusions
 
-- This project helped me understand that breaking down the project into achievable goals can help understand whats going on and figure out what the next step is and how to do it. To improve, i would move the round timer onto the screen and make it so the camera doesnt close every round
+- NEED TO ADD
